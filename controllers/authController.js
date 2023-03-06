@@ -4,7 +4,9 @@ import JWT  from 'jsonwebtoken';
 export const registerController = async(req,res)=>{
     try{
         const {name,email,password,phone,adress} = req.body
-        //validation
+
+        
+//----------------- VALIDATION ------------------
         if(!name){
             return res.json({error: 'Name is required'});
         }
@@ -20,18 +22,26 @@ export const registerController = async(req,res)=>{
         if(!adress){
             return res.json({error: 'Adress is required'});
         };
-        //Check user
+
+
+//----------------- CHECK USER ------------------
         const existingUser = await userModel.findOne({email})
-        //existing user
+
+
+//----------------- CHECK AN EXISTING USER ------------------
         if(existingUser){
             return res.status(200).json({
                 success: true,
                 message: 'User already existing please login'
             });
         }
-        //register user
+
+
+//----------------- REGISTER A USER ------------------
         const hashedPassword = await hashPassword(password)
-        //save user
+
+
+//----------------- SAVE USER ------------------
         const user = await new userModel({name,email,phone,adress,password: hashedPassword}).save()
 
         res.status(201).json({
@@ -50,18 +60,23 @@ export const registerController = async(req,res)=>{
     }
 };
 
-//POST LOGIN
+
+//----------------- POST LOGIN ------------------
 export const loginController = async (req,res)=>{
     try{
         const {email, password} = req.body
-        //validation 
+
+
+//----------------- VALIDATION ------------------ 
         if(!email || !password){
            return res.status(404).send({
             success: false,
             message: 'INVALID EMAIL OR PASSWORD'
            })
         }
-        //check user
+
+
+//----------------- CHECK USER ------------------
         const user = await userModel.findOne({email})
         if(!user){
             return res.status(404).send({
@@ -76,7 +91,9 @@ export const loginController = async (req,res)=>{
                 message: 'Invalid Password'
             })
         }
-        //token
+
+
+//----------------- TOKEN ------------------
         const token = await JWT.sign({_id:user._id},process.env.JWT_SECRET, {
             expiresIn: '7d',
 
@@ -102,8 +119,93 @@ export const loginController = async (req,res)=>{
         })
     }
 };
-//test controller
+
+
+//----------------- TEST CONTROLLER ------------------
 export const testController = (req,res)=>{
     res.send('protected Route')
 };
 
+
+//----------------- UPDATE USER CONTROLLER ------------------
+export const updateUserController = async(req,res)=>{
+    try{
+        const {name, eemail, password, phone, adress} = req.body
+        const {id} = req.params
+        const user = await userModel.findByIdAndUpdate(id, {name, eemail, password, phone, adress}, {new: true})
+        res.status(200).send({
+            success: true,
+            message: 'User Updated successfully',
+            user
+
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: 'Error in updating user',
+            error
+        });
+    }
+};
+
+
+//----------------- GET ALL USERS CONTROLLER ------------------
+export const getallusers = async(req,res)=>{
+    try{
+        const user = await userModel.find({});
+        res.status(200).send({
+            success: true,
+            message: 'User list provided successfully',
+            user,
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: 'Failed to get all users',
+            error
+        });
+    }
+};
+
+
+//----------------- GET A SINGLE USER CONTROLLER ------------------
+export const getSingleUser = async(req, res)=>{
+    try{
+        const user = await userModel.findOne({email:req.params.email});
+        res.status(200).send({
+            success: true,
+            message: 'User provided with success',
+            user,
+        });
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: 'Failed to get the user',
+            error,
+        })
+    }
+};
+
+
+//----------------- DELETE USER CONTROLLER ------------------
+export const deleteUserController = async(req,res)=>{
+    try{
+        const {id} = req.params
+        await userModel.findByIdAndDelete(id)
+        res.status(200).send({
+            success: true,
+            message: 'User deleted successfully'
+        })
+    }catch(error){
+        console.log(error)
+        res.status(500).send({
+            success: false,
+            message: 'Failed to delete User',
+            error
+        });
+    }
+
+};
