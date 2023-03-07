@@ -1,5 +1,10 @@
 import  express  from "express";
-import { createProductController, deleteProductController, getPhotoController, getProductsController, getSingleProduct, updateProductController } from "../controllers/productController.js";
+import { createProductController,
+        deleteProductController,
+        getPhotoController,
+        getProductsController,
+        getSingleProduct,
+        updateProductController } from "../controllers/productController.js";
 import ExpressFormidable from "express-formidable";
 const router = express.Router()
 
@@ -16,5 +21,5 @@ router.get('/get-photo/:pid', getPhotoController)
 router.delete('/delete-product/:id', deleteProductController)
 
 //update product route
-router.put('/update-product/:pid', updateProductController)
+router.put('/updateproduct/:id', updateProductController)
 export default router

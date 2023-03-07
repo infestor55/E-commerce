@@ -24,6 +24,11 @@ const productSchema  = new mongoose.Schema({
         data: Buffer,
         contentType:String,
     },
+    slug:{
+        type: String,
+        required: true,
+        unique: true
+    }
    
 },{timestamps: true});
 export default mongoose.model('Products', productSchema)
