@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoute.js';
 import categoryRoutes from './routes/categoryRoute.js';
+import porductRoutes from './routes/productRoute.js';
 
 //configure env
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(express.urlencoded({extended: false}));
 //routes
 app.use('/api', authRoutes);
 app.use('/api/category', categoryRoutes );
+app.use('/api/products', porductRoutes)
 
 //rest api
 app.get('/',(req,res)=>{
