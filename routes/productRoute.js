@@ -4,11 +4,12 @@ import { createProductController,
         getPhotoController,
         getProductsController,
         getSingleProduct,
-        updateProductController } from "../controllers/productController.js";
-import ExpressFormidable from "express-formidable";
+        updateProductController,
+         } from "../controllers/productController.js";
+import formidable from "express-formidable";
 const router = express.Router()
 
-router.post("/create-product",ExpressFormidable(), createProductController)
+router.post("/create-product",formidable(), createProductController);
 //get all products route
 router.get('/get-products', getProductsController);
 //get a single product
@@ -21,5 +22,5 @@ router.get('/get-photo/:pid', getPhotoController)
 router.delete('/delete-product/:id', deleteProductController)
 
 //update product route
-router.put('/updateproduct/:id', updateProductController)
+router.put("/update-product/:id",formidable(), updateProductController);
 export default router
